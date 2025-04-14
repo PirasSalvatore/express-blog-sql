@@ -17,15 +17,35 @@ function index(req, res) {
 //show (read)
 function show(req, res) {
 
-    const postSlug = req.params.Slug
+    const postSlug = req.params.Slug.replaceAll("-", " ")
 
-    const sql = `SELECT * FROM posts WHERE title LIKE '${postSlug.replaceAll("-", " ")}'`
+    const sql = `SELECT * FROM posts WHERE title LIKE ? `
 
-    connection.query(sql, (err, results) => {
-        if (err) return res.status(500).json({ error: 'Database query failed' })
+    const sqlJoin = `
+    SELECT tags.*
+    FROM post_tag
+    JOIN tags ON post_tag.tag_id = tags.id
+    WHERE post_tag.post_id = ?`
 
 
-        res.json(results)
+    connection.query(sql, [postSlug], (err, results) => {
+        if (err) return res.status(500).json({ error: 'Database query failed 1' })
+
+        if (results.length === 0) return res.status(404).json({ message: 'Post not found' })
+
+        const post = results[0]
+
+        console.log(post);
+
+
+        connection.query(sqlJoin, [post.id], (err, results) => {
+            if (err) return res.status(500).json({ error: 'Database query failed 2' })
+
+            post.tags = results
+
+            res.json(post)
+        })
+
     })
 }
 
