@@ -120,11 +120,11 @@ function modify(req, res) {
 //delete (delete)
 function destroy(req, res) {
 
-    const postSlug = req.params.Slug
+    const postSlug = req.params.Slug.replaceAll("-", " ")
 
-    const sql = `DELETE FROM posts WHERE title LIKE '${postSlug.replaceAll("-", " ")}'`
+    const sql = `DELETE FROM posts WHERE title LIKE ?`
 
-    connection.query(sql, (err, results) => {
+    connection.query(sql, [postSlug], (err, results) => {
         if (err) return res.status(500).json({ error: 'Database query failed' })
 
         console.log('delete complite');
