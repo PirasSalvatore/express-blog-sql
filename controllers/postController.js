@@ -1,5 +1,7 @@
 const posts = require("../data/posts")
 
+const connection = require('../data/db')
+
 //index (read)
 function index(req, res) {
 
