@@ -108,22 +108,15 @@ function destroy(req, res) {
 
     const postSlug = req.params.Slug
 
-    const post = posts.find((post) => post.slug === postSlug)
+    const sql = `DELETE FROM posts WHERE title LIKE '${postSlug.replaceAll("-", " ")}'`
 
-    if (!post) {
+    connection.query(sql, (err, results) => {
+        if (err) return res.status(500).json({ error: 'Database query failed' })
 
-        return res.status(404).json({
-            error: "404 NOT FOUD",
-            messege: "post not found"
-        })
-    }
+        console.log('delete complite');
 
-
-    posts.splice(posts.indexOf(post), 1)
-
-    console.log(posts);
-
-    res.sendStatus(204);
+        res.sendStatus(204)
+    })
 }
 
 module.exports = {
