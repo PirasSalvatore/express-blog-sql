@@ -19,20 +19,14 @@ function show(req, res) {
 
     const postSlug = req.params.Slug
 
-    console.log(postSlug.length);
+    const sql = `SELECT * FROM posts WHERE title LIKE '${postSlug.replaceAll("-", " ")}'`
+
+    connection.query(sql, (err, results) => {
+        if (err) return res.status(500).json({ error: 'Database query failed' })
 
 
-    const post = postSlug.length > 2 ? posts.find((post) => post.slug === postSlug) : posts.find((post) => post.id === Number(postSlug))
-
-    if (!post) {
-
-        return res.status(404).json({
-            error: "404 NOT FOUD",
-            messege: "post not found"
-        })
-    }
-
-    res.json(post);
+        res.json(results)
+    })
 }
 
 //store (create)
