@@ -1,0 +1,5 @@
+node_modules/
+public/.DS_Store
+public/imgs/.DS_Store
+public/imgs/posts/.DS_Store
+.env
