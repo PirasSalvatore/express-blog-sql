@@ -5,24 +5,13 @@ const connection = require('../data/db')
 //index (read)
 function index(req, res) {
 
-    let postsFiltered = posts
+    const sql = 'SELECT * FROM posts'
 
-    const filter = req.query.tags
+    connection.query(sql, (err, results) => {
+        if (err) return res.status(500).json({ error: 'Database query failed' })
 
-    console.log(filter);
-    console.log(posts[0].tags.join("").replaceAll(" ", ""))
-
-
-    if (filter) {
-        /*
-        utilizzo la funzione join per trasformare l'array tag in una stringa
-        utilizzo la funzione replaceALL per andare a rimuovere eventuali spazzi nella stringa
-        utilizzo la funzione includes per verificare se nella stringa generata è presente il pattern per il filtro
-        */
-        postsFiltered = posts.filter(post => post.tags.join("").replaceAll(" ", "").includes(filter))
-    }
-
-    res.json(postsFiltered)
+        res.json(results)
+    })
 }
 
 //show (read)
